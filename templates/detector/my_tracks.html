@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% block title %}My Tracks{% endblock %}
+
+{% block extra_head %}
+<style>
+    .track-container {
+        max-width: 900px;
+        margin: 2rem auto;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .track-container h2 {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    table.track-table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #f9f9f9;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .track-table th,
+    .track-table td {
+        padding: 12px 16px;
+        border-bottom: 1px solid #ddd;
+        text-align: left;
+    }
+
+    .track-table th {
+        background-color: #009cf0;
+        color: white;
+    }
+
+    .track-table tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .track-table a {
+        color: #007bff;
+        text-decoration: underline;
+    }
+
+    .delete-btn {
+        background-color: #e74c3c;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+    .delete-btn:hover {
+        background-color: #c0392b;
+    }
+
+    .no-tracks {
+        text-align: center;
+        margin-top: 3rem;
+        color: #666;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="track-container">
+    <h2>Your Uploaded Tracks</h2>
+
+    {% if tracks %}
+    <form method="post" onsubmit="return confirm('Are you sure you want to delete this track?');">
+        {% csrf_token %}
+        <table class="track-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Upload Date</th>
+                    <th>File</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for track in tracks %}
+                <tr>
+                    <td>{{ track.Title }}</td>
+                    <td>{{ track.UploadDate }}</td>
+                    <td>
+                        <a href="{{ track.File.url }}" download>Download</a>
+                    </td>
+                    <td>
+                        <button type="submit" name="delete_track_id" value="{{ track.MusicFileID }}" class="delete-btn">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </form>
+    {% else %}
+    <p class="no-tracks">You haven't uploaded any tracks yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

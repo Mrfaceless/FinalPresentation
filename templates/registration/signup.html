@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}Sign Up{% endblock %}
+
+{% block extra_head %}
+<style>
+    .signup-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 80vh;
+    }
+
+    .signup-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        width: 100%;
+        max-width: 400px;
+        color: black;
+    }
+
+    .signup-card h2 {
+        margin-bottom: 0.5rem;
+        text-align: center;
+    }
+
+    .signup-card p.sub {
+        margin-bottom: 1.5rem;
+        color: #888;
+        text-align: center;
+    }
+
+    .signup-card input {
+        width: 100%;
+        padding: 0.75rem;
+        margin: 0.5rem 0;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        font-size: 1rem;
+    }
+
+    .signup-card button {
+        width: 100%;
+        padding: 0.75rem;
+        margin-top: 1rem;
+        border: none;
+        border-radius: 25px;
+        background-color: #009cf0;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .signup-card a {
+        display: block;
+        text-align: center;
+        margin-top: 1rem;
+        color: #666;
+        text-decoration: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="signup-container">
+    <div class="signup-card">
+        <h2>Create an Account</h2>
+        <p class="sub">Register to start uploading and analyzing your music</p>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Sign Up</button>
+        </form>
+        <a href="{% url 'login' %}">Already have an account? Log in</a>
+    </div>
+</div>
+{% endblock %}

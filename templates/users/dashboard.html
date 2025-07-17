@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+
+{% block extra_head %}
+<style>
+    .dashboard-container {
+        text-align: center;
+        padding: 2rem;
+    }
+
+    .dashboard-container h1 {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .dashboard-container p {
+        color: #777;
+        font-size: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .get-started-btn {
+        background-color: #009cf0;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        margin-bottom: 3rem;
+    }
+
+    .upload-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+        max-width: 400px;
+        margin: 0 auto 3rem auto;
+    }
+
+    .upload-card h3 {
+        margin-bottom: 1rem;
+    }
+
+    .upload-card input[type="file"] {
+        display: block;
+        width: 100%;
+        padding: 0.5rem;
+        margin: 1rem 0;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        font-size: 1rem;
+    }
+
+    .upload-card button {
+        background-color: #009cf0;
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        border-radius: 25px;
+        cursor: pointer;
+        width: 100%;
+    }
+
+    .features {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-top: 3rem;
+    }
+
+    .feature-box {
+        background: #eee;
+        padding: 1rem 1.5rem;
+        border-radius: 10px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <h1>Protect Your Music with AI Detection</h1>
+    <p>Upload your track and detect copyright similarities instantly</p>
+    <a href="{% url 'upload_track' %}" class="get-started-btn">Get Started</a>
+
+    <div id="upload" class="upload-card">
+        <h3>Upload Your Track</h3>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.audio_file.label_tag }}
+            {{ form.audio_file }}
+            <button type="submit">Analyze</button>
+        </form>
+    </div>
+
+    <h2>Our Features</h2>
+    <div class="features">
+        <div class="feature-box">✅ AI Powered Detection</div>
+        <div class="feature-box">⚡ Instant Results</div>
+        <div class="feature-box">🔒 Secure and Private</div>
+    </div>
+</div>
+{% endblock %}
+

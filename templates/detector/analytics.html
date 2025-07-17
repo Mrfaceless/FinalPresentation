@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Analytics | Music Copyright Detector{% endblock %}
+
+{% block content %}
+<div
+    style="background: white; padding: 2rem; border-radius: 10px; max-width: 900px; width: 100%; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+    <h2 style="margin-bottom: 1rem; color: #009cf0;">Your Music Analytics</h2>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 2rem; margin-bottom: 2rem;">
+        <div style="flex: 1; min-width: 200px; background: #f9f9f9; padding: 1rem; border-radius: 8px;">
+            <h3 style="margin-top: 0;">Total Uploaded Tracks</h3>
+            <p style="font-size: 2rem; font-weight: bold;">{{ total_tracks }}</p>
+        </div>
+        <div style="flex: 1; min-width: 200px; background: #f9f9f9; padding: 1rem; border-radius: 8px;">
+            <h3 style="margin-top: 0;">Total Analyses</h3>
+            <p style="font-size: 2rem; font-weight: bold;">{{ total_analyses }}</p>
+        </div>
+    </div>
+
+    <div style="margin-bottom: 2rem;">
+        <h3 style="color: #009cf0;">Report Verdicts</h3>
+        <ul style="list-style: none; padding-left: 0;">
+            <li><strong>No Violation:</strong> {{ verdict_counts.no_violation }}</li>
+            <li><strong>Potential Violation:</strong> {{ verdict_counts.potential_violation }}</li>
+            <li><strong>Confirmed Violation:</strong> {{ verdict_counts.confirmed_violation }}</li>
+        </ul>
+    </div>
+
+    <div>
+        <h3 style="color: #009cf0;">Recent Similarity Scores</h3>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+            <thead>
+                <tr style="background-color: #009cf0; color: white;">
+                    <th style="padding: 0.75rem;">Track</th>
+                    <th style="padding: 0.75rem;">Matched Copyright</th>
+                    <th style="padding: 0.75rem;">Similarity (%)</th>
+                    <th style="padding: 0.75rem;">Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for analysis in recent_scores %}
+                <tr style="background-color: cycle '#ffffff' '#f2f2f2'">
+                    <td style="padding: 0.75rem;">{{ analysis.MusicFileID.Title }}</td>
+                    <td style="padding: 0.75rem;">{{ analysis.CopyrightID.Title }}</td>
+                    <td style="padding: 0.75rem;">{{ analysis.SimilarityScore }}</td>
+                    <td style="padding: 0.75rem;">{{ analysis.AnalysisDate }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" style="padding: 1rem; text-align: center;">No recent analyses found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

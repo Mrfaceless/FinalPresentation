@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Track Report PDF</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 700px;
+            margin: auto;
+        }
+
+        .section {
+            background-color: #f0f0f0;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .title {
+            font-size: 24px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .label {
+            font-weight: bold;
+        }
+
+        .highlight {
+            background-color: #f8d7da;
+            padding: 10px;
+            border-radius: 10px;
+            color: #721c24;
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 12px;
+            color: #555;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <div class="title">Track Analysis Report</div>
+
+        <div class="section">
+            <p><span class="label">Track Name:</span> {{ report.AnalysisID.MusicFileID.Title }}</p>
+            <p><span class="label">Artist:</span> {{ report.AnalysisID.MusicFileID.MusicianID.MusicianID.username }}</p>
+            <p><span class="label">Similarity Score:</span> {{ report.AnalysisID.SimilarityScore }}%</p>
+            <p><span class="label">Generated Date:</span> {{ report.GeneratedDate }}</p>
+        </div>
+
+        <div class="highlight">
+            Copyright Status:
+            <strong>{{ report.get_Verdict_display }}</strong>
+        </div>
+
+        <div class="section">
+            <p><span class="label">Reference Track:</span> {{ report.AnalysisID.CopyrightID.Title }}</p>
+            <p><span class="label">Copyright Holder:</span> {{ report.AnalysisID.CopyrightID.CopyrightHolderID.Name }}
+            </p>
+        </div>
+
+        <div class="footer">
+            &copy; 2025 Music Copyright Detector — All rights reserved.
+        </div>
+
+    </div>
+</body>
+
+</html>

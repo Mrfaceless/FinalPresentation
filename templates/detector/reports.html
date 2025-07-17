@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% block title %}Recent Reports{% endblock %}
+
+{% block extra_head %}
+<style>
+    .reports-container {
+        max-width: 900px;
+        margin: 2rem auto;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .reports-container h2 {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .report-card {
+        background: #f0f0f0;
+        border-radius: 15px;
+        padding: 1rem 2rem;
+        margin-bottom: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .report-info {
+        flex: 1;
+    }
+
+    .report-info p {
+        margin: 0.3rem 0;
+    }
+
+    .report-action a {
+        background-color: #009cf0;
+        color: white;
+        padding: 0.4rem 1rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .pagination {
+        text-align: center;
+        margin-top: 2rem;
+    }
+
+    .pagination a,
+    .pagination strong {
+        margin: 0 6px;
+        padding: 6px 12px;
+        border-radius: 6px;
+        background-color: #e0e0e0;
+        text-decoration: none;
+        color: #333;
+        font-weight: bold;
+    }
+
+    .pagination strong {
+        background-color: #009cf0;
+        color: white;
+    }
+
+    .empty-msg {
+        text-align: center;
+        margin-top: 3rem;
+        color: #777;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="reports-container">
+    <h2>Recent Reports</h2>
+
+    {% if reports %}
+    {% for report in reports %}
+    <div class="report-card">
+        <div class="report-info">
+            <p><strong>Track:</strong> {{ report.AnalysisID.MusicFileID.Title }}</p>
+            <p><strong>Similarity:</strong> {{ report.AnalysisID.SimilarityScore }}%</p>
+            <p><strong>Verdict:</strong> {{ report.get_Verdict_display }}</p>
+            <p><strong>Date:</strong> {{ report.GeneratedDate }}</p>
+        </div>
+        <div class="report-action">
+            <a href="{% url 'report_detail' report.ReportID %}">View Details</a>
+        </div>
+    </div>
+    {% endfor %}
+
+    {% if reports.has_other_pages %}
+    <div class="pagination">
+        {% if reports.has_previous %}
+        <a href="?page={{ reports.previous_page_number }}">« Prev</a>
+        {% endif %}
+
+        {% for num in reports.paginator.page_range %}
+        {% if reports.number == num %}
+        <strong>{{ num }}</strong>
+        {% elif num > reports.number|add:'-3' and num < reports.number|add:'3' %} <a href="?page={{ num }}">{{ num
+            }}</a>
+            {% endif %}
+            {% endfor %}
+
+            {% if reports.has_next %}
+            <a href="?page={{ reports.next_page_number }}">Next »</a>
+            {% endif %}
+    </div>
+    {% endif %}
+    {% else %}
+    <p class="empty-msg">No reports available yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

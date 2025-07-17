@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% block title %}Track Analysis Results{% endblock %}
+
+{% block extra_head %}
+<script src="https://unpkg.com/wavesurfer.js"></script>
+<style>
+    .detail-container {
+        max-width: 900px;
+        margin: 2rem auto;
+        text-align: center;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .box {
+        background-color: #f0f0f0;
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .status-box {
+        background-color: #f8d7da;
+        color: #721c24;
+        padding: 1rem;
+        border-radius: 15px;
+        font-weight: bold;
+        margin-bottom: 2rem;
+    }
+
+    .waveform-container {
+        margin: 1.5rem auto;
+        width: 100%;
+        max-width: 600px;
+        background: #e8e8e8;
+        border-radius: 10px;
+        height: 120px;
+    }
+
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+
+    .action-buttons a,
+    .action-buttons button {
+        text-decoration: none;
+        padding: 0.6rem 1.2rem;
+        border-radius: 10px;
+        font-weight: bold;
+        color: white;
+        background-color: #009cf0;
+        border: none;
+        cursor: pointer;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="detail-container">
+    <div class="box">
+        <h2>Track Analysis Results</h2>
+        <p><strong>Track Name:</strong> {{ report.AnalysisID.MusicFileID.Title }}</p>
+        <p><strong>Artist:</strong> {{ report.AnalysisID.MusicFileID.MusicianID.MusicianID.username }}</p>
+        <p><strong>Similarity Score:</strong> {{ report.AnalysisID.SimilarityScore }}%</p>
+        <p><strong>Date:</strong> {{ report.GeneratedDate }}</p>
+    </div>
+
+    <div class="status-box">
+        <strong>Copyright Status:</strong> {{ report.get_Verdict_display }}
+    </div>
+
+    <div class="box">
+        <h3>Your Uploaded Track</h3>
+        <div id="waveform" class="waveform-container"></div>
+        <button id="playPause">Play / Pause</button>
+        {% if report.AnalysisID.MatchedOffset %}
+        <button id="seekToMatch">Jump to Matched Segment</button>
+        {% endif %}
+    </div>
+
+    <div class="box">
+        <h3>Matched Segment of Reference Track</h3>
+        <audio id="refTrack" controls style="width: 100%;">
+            <source src="{{ report.AnalysisID.CopyrightID.AudioFile.url }}" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+        {% if report.AnalysisID.MatchedOffset %}
+        <button id="play-match">Play Matched Segment</button>
+        {% endif %}
+    </div>
+
+    <div class="action-buttons">
+        <a href="{% url 'recent_reports' %}">Back to Reports</a>
+        <a href="{% url 'report_pdf' report.ReportID %}">Download PDF</a>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const wavesurfer = WaveSurfer.create({
+            container: '#waveform',
+            waveColor: '#ccc',
+            progressColor: '#009cf0',
+            height: 100,
+        });
+
+        const trackUrl = "{{ report.AnalysisID.MusicFileID.File.url|escapejs }}";
+        wavesurfer.load(trackUrl);
+
+        const offset = parseFloat("{{ report.AnalysisID.MatchedOffset|default:'0.0'|floatformat:2|escapejs }}");
+        const matchDuration = 10; // play 10 seconds of matched segment
+
+        const playBtn = document.getElementById('playPause');
+        const seekBtn = document.getElementById('seekToMatch');
+        const refTrack = document.getElementById('refTrack');
+        const playMatchBtn = document.getElementById('play-match');
+
+        if (playBtn) {
+            playBtn.addEventListener('click', () => wavesurfer.playPause());
+        }
+
+        if (seekBtn) {
+            seekBtn.addEventListener('click', () => {
+                const duration = wavesurfer.getDuration();
+                if (duration) {
+                    const ratio = offset / duration;
+                    wavesurfer.seekTo(Math.min(ratio, 0.99));
+                    wavesurfer.play();
+                }
+            });
+        }
+
+        if (refTrack && playMatchBtn) {
+            playMatchBtn.addEventListener('click', () => {
+                refTrack.currentTime = offset;
+                refTrack.play();
+
+                const stopTime = offset + matchDuration;
+                const interval = setInterval(() => {
+                    if (refTrack.currentTime >= stopTime || refTrack.ended) {
+                        refTrack.pause();
+                        clearInterval(interval);
+                    }
+                }, 200);
+            });
+        }
+    });
+</script>
+
+{% endblock %}
