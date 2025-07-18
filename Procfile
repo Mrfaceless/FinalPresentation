@@ -1,1 +1,1 @@
-web: gunicorn FinalPresentation.wsgi:application
+web: gunicorn MusicCopyrightDetectorSystem.wsgi:application
