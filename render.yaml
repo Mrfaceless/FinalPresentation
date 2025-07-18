@@ -3,9 +3,9 @@ services:
     name: music-copyright-detector
     env: python
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "gunicorn MusicCopyrightDetectorSystem.wsgi:application"
+    startCommand: "gunicorn core.wsgi:application"
     envVars:
       - key: DJANGO_SETTINGS_MODULE
-        value: MusicCopyrightDetectorSystem.settings
+        value: core.settings
       - key: PYTHON_VERSION
         value: 3.12.6
