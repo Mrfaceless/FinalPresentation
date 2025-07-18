@@ -61,6 +61,7 @@ reportlab==4.4.1
 requests==2.32.3
 rich==14.0.0
 scikit-learn==1.6.1
+gunicorn
 scipy==1.15.3
 setuptools==80.7.1
 six==1.17.0
